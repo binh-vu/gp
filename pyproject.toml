@@ -1,0 +1,64 @@
+[project]
+name = "gp"
+version = "6.0.0"
+authors = [{ name = "Binh Vu", email = "bvu687@gmail.com" }]
+description = "A library to build semantic descriptions of tables"
+readme = "README.md"
+license = { file = "LICENSE" }
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+
+requires-python = ">=3.10"
+
+dependencies = [
+    'orjson >= 3.9.0, < 4.0.0',
+    'python-slugify >= 8.0.4, < 9.0.0',
+    'tqdm >= 4.64.0, < 5.0.0',
+    'ujson >= 5.5.0, < 6.0.0',
+    'ruamel.yaml >= 0.17.21, < 0.18.0',
+    'loguru >= 0.7.0, < 0.8.0',
+    'networkx >= 3.2.1, < 4.0.0',
+    'omegaconf >= 2.0.6, < 3.0.0',
+    'rdflib >= 7.0.0, < 8.0.0',
+    'ipython >= 8.0.1, < 9.0.0',
+    'matplotlib >= 3.5.3, < 4.0.0',
+    'rltk >= 2.0.0-a20, <= 2.0.0-a20',
+    'pslpython >= 2.2.2, <= 2.2.2',
+    'numparser2 >= 1.0.2, < 2.0.0',
+    'ftfy >= 6.1.1, < 7.0.0',
+    'sem-desc >= 6.10.1, < 7.0.0',
+    'kgdata >= 7.0.0, < 8.0.0',
+    'steiner-tree >= 1.2.1, < 2.0.0',
+    'typing_extensions >= 4.0.0, < 5.0.0',
+    'hugedict >= 2.12.10, < 3.0.0',
+    'graph-wrapper >= 1.6.0, < 2.0.0',
+    'timer4 >= 1.0.4, < 2.0.0',
+    'libactor >= 2.6.0, < 3.0.0',
+    'sm-datasets >= 2.0.0, < 3.0.0',
+    'spacy >= 3.8.4, < 4.0.0',
+    'strsim-2 >= 1.0.0, < 2.0.0',
+    'symspellpy >= 6.7.7, < 7.0.0',
+]
+
+[project.urls]
+homepage = "https://github.com/usc-isi-i2/grams"
+repository = "https://github.com/usc-isi-i2/grams"
+
+[project.scripts]
+gp = 'gp.cli:cli'
+
+[project.optional-dependencies]
+dev = ['pytest >= 8.3.3, < 9.0.0', 'pytest-mock >= 3.6.1, < 4.0.0']
+pyserini = ['pyserini-install >= 0.23.1']
+all = ['gp[dev,pyserini]']
+
+[tool.maturin]
+include = ["gp"]
+module-name = "gp_core"
+features = ["extension-module"]
+
+[build-system]
+requires = ["maturin>=1.0.0,<2.0.0"]
+build-backend = "maturin"

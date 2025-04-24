@@ -1,0 +1,27 @@
+[project]
+name = "gp_core"
+version = "6.0.0"
+description = "A library to build semantic descriptions of tables"
+readme = "README.md"
+authors = [{ name = "Binh Vu", email = "bvu687@gmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+
+requires-python = ">=3.10"
+
+dependencies = []
+
+[project.urls]
+homepage = "https://github.com/binh-vu/gp"
+repository = "https://github.com/binh-vu/gp"
+
+[tool.maturin]
+module-name = "gp_core"
+features = ["extension-module"]
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
