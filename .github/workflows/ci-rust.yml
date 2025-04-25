@@ -125,7 +125,7 @@ jobs:
         run: |
           cd rust
           pip install twine
-          twine upload --skip-existing rust/dist/* -u $PYPI_USER -p $PYPI_PWD
+          twine upload --skip-existing dist/* -u $PYPI_USER -p $PYPI_PWD
         env:
           PYPI_USER: __token__
           PYPI_PWD: ${{ secrets.PYPI_TOKEN }}
