@@ -7,6 +7,9 @@ set -e
 #
 # Envionment Arguments: (handled by `args.py`)
 #   PYTHON_HOME: the path to the Python installation, which will be used to build the wheels for. 
+#        Empty if you want to use multiple Pythons by providing PYTHON_HOMES. This has the highest priority. If set, we won't consider PYTHON_HOMES and PYTHON_VERSIONS
+#   PYTHON_HOMES: comma-separated directories that either contains Python installations or are Python installations.
+#   PYTHON_VERSIONS: versions of Python separated by comma if you want to restricted to specific versions.
 # Arguments:
 #   -t <target>: target platform. See https://doc.rust-lang.org/nightly/rustc/platform-support.html
 
@@ -27,21 +30,6 @@ then
     exit 1
 fi
 
-# ##############################################
-echo "::group::Discovering Python"
-TMP=$(python $SCRIPT_DIR/pydiscovery.py --min-version 3.10 --root-dir $PYTHON_HOME)
-PYTHON_EXECS=($TMP)
-if [ ${#PYTHON_EXECS[@]} -eq 0 ]; then
-    echo "No Python found. Did you forget to set any environment variable PYTHON_HOME?"
-else
-    for PYTHON_EXEC in "${PYTHON_EXECS[@]}"
-    do
-        echo "Found $PYTHON_EXEC"
-    done    
-fi
-echo "::endgroup::"
-echo
-
 echo "::group::Setup build tools"
 # ##############################################
 # to build rocksdb, we need CLang and LLVM
@@ -55,8 +43,8 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     else
         # centos
         # https://developers.redhat.com/blog/2018/07/07/yum-install-gcc7-clang#
-        yum install -y llvm-toolset-7.0
-        source /opt/rh/llvm-toolset-7.0/enable
+        yum install -y llvm-toolset-7
+        source /opt/rh/llvm-toolset-7/enable
     fi
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     echo "Skip on MacOS. Assuming you have CLang and LLVM installed."    
@@ -95,12 +83,26 @@ else
 fi
 
 # ##############################################
-for PYTHON_EXEC in "${PYTHON_EXECS[@]}"
-do
-    echo "::group::Building for Python $PYTHON_EXEC"
+echo "::group::Discovering Python"
+IFS=':' read -a PYTHON_HOMES < <(MINIMUM_PYTHON_VERSION=3.10 python $SCRIPT_DIR/pydiscovery.py)
+if [ ${#PYTHON_HOMES[@]} -eq 0 ]; then
+    echo "No Python found. Did you forget to set any environment variable PYTHON_HOME or PYTHON_HOMES?"
+else
+    for PYTHON_HOME in "${PYTHON_HOMES[@]}"
+    do
+        echo "Found $PYTHON_HOME"
+    done
+fi
+echo "::endgroup::"
+echo
 
-    echo "Run: maturin build -r -o dist -i $PYTHON_EXEC --target $target"
-    "maturin" build -r -o dist -i "$PYTHON_EXEC" --target $target
+# ##############################################
+for PYTHON_HOME in "${PYTHON_HOMES[@]}"
+do
+    echo "::group::Building for Python $PYTHON_HOME"
+
+    echo "Run: maturin build -r -o dist -i $PYTHON_HOME/bin/python3 --target $target"
+    "maturin" build -r -o dist -i "$PYTHON_HOME/bin/python3" --target $target
 
     echo "::endgroup::"
     echo
