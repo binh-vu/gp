@@ -13,7 +13,8 @@ jobs:
     strategy:
       matrix:
         # platform: ["ubuntu-22.04", "macos-15", "windows-2022"]
-        platform: ["ubuntu-22.04", "windows-2022"]
+        # platform: ["ubuntu-22.04", "windows-2022"]
+        platform: ["macos-15"]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
