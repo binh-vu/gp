@@ -46,7 +46,7 @@ indexmap = "1.9.3"
 ahash = "0.8.3"
 pyo3-polars = "0.6.0"
 indicatif = { version = "0.17.6", features = ["rayon"] }
-procspawn = { version = "1.0.0", features = [] }
+# procspawn = { version = "1.0.0", features = [] }
 rand = "0.8.5"
 num_cpus = "1.16.0"
 
