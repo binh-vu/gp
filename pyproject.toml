@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "gp-2"
+name = "gramsplus-2"
 version = "6.0.0"
 description = "A library to build semantic descriptions of tables"
 authors = ["Binh Vu <bvu687@gmail.com>"]
