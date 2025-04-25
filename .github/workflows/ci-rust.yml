@@ -38,13 +38,13 @@ jobs:
         run: |
           cd rust
           cargo test --no-default-features --features pyo3/auto-initialize
-      - name: Fix PyO3 build on Mac
-        if: ${{ startsWith(matrix.platform, 'macos') }}
-        run: |
-          mkdir -p ~/.cargo/
-          echo '[target.aarch64-apple-darwin]' >> ~/.cargo/config.toml
-          echo 'rustflags = ["-C", "link-arg=-undefined", "-C", "link-arg=dynamic_lookup"]' >> ~/.cargo/config.toml
-          cat ~/.cargo/config.toml
+      # - name: Fix PyO3 build on Mac
+      #   if: ${{ startsWith(matrix.platform, 'macos') }}
+      #   run: |
+      #     mkdir -p ~/.cargo/
+      #     echo '[target.aarch64-apple-darwin]' >> ~/.cargo/config.toml
+      #     echo 'rustflags = ["-C", "link-arg=-undefined", "-C", "link-arg=dynamic_lookup"]' >> ~/.cargo/config.toml
+      #     cat ~/.cargo/config.toml
       - uses: messense/maturin-action@v1
         env:
           MACOSX_DEPLOYMENT_TARGET: "10.14"
