@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "gp"
+name = "gp-2"
 version = "6.0.0"
 description = "A library to build semantic descriptions of tables"
 authors = ["Binh Vu <bvu687@gmail.com>"]
@@ -11,6 +11,7 @@ classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
 ]
+packages = [{ include = "gp" }]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.13"
