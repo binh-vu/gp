@@ -1397,7 +1397,9 @@ dependencies = [
 
 [[package]]
 name = "kgdata_core"
-version = "4.0.1"
+version = "4.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b7b3e3572bea3a2f3516328537f48b111e64e8ce11ad8ac4b8f5a10d2adc9391"
 dependencies = [
  "ahash 0.8.11",
  "anyhow",

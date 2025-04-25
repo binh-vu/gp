@@ -28,8 +28,7 @@ petgraph = { version = "0.6.2", features = ["serde-1"] }
 serde = { version = "1.0.137", features = ["derive"] }
 serde_json = "1.0.81"
 thiserror = "1.0.31"
-# kgdata_core = "4.0.1"
-kgdata_core = { path = "../../../../libs/kgdata/rust" }
+kgdata_core = "4.0.2"
 hashbrown = { version = "0.14.0", features = ["serde", "rayon"] }
 postcard = { version = "1.0.2", features = ["alloc"] }
 itertools = "0.10.5"
