@@ -19,8 +19,12 @@ from sm.dataset import Dataset, Example, FullTable
 from sm.namespaces.namespace import KnowledgeGraphNamespace
 from sm.namespaces.utils import KGName, get_kgns
 from sm.prelude import M, O
-from sm_datasets.datasets import Datasets
 from smml.dataset_helper import DatasetList, DatasetQuery
+
+try:
+    from sm_datasets.datasets import Datasets
+except ImportError:
+    Datasets = None
 
 
 @dataclass
