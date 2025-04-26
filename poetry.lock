@@ -1107,21 +1107,21 @@ wcwidth = "*"
 
 [[package]]
 name = "gp-core"
-version = "6.0.0"
+version = "6.0.1"
 description = "A library to build semantic descriptions of tables"
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "gp_core-6.0.0-cp310-cp310-macosx_10_14_x86_64.macosx_11_0_arm64.macosx_10_14_universal2.whl", hash = "sha256:deb3cfc0593c6c7cb1c8b184924e36c4d20d20381a2708f23016b3ba674fb43b"},
-    {file = "gp_core-6.0.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:262b116517535a298a2a3d344eff775912de698373d616b0a955dbaf049f2c28"},
-    {file = "gp_core-6.0.0-cp310-cp310-manylinux_2_35_x86_64.whl", hash = "sha256:4f90f73cf973aebdd9045d84c299fb9e85c8dd4d067803613edbda710f82912f"},
-    {file = "gp_core-6.0.0-cp310-cp310-win_amd64.whl", hash = "sha256:2414a8712e2b4aea0c463106e08280f05e5172bb8c51c5cef776fe07681808ce"},
-    {file = "gp_core-6.0.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6f525f8a4caaa0d059c388648deeb23bd7b5a27ea0971142289becce7f1efd76"},
-    {file = "gp_core-6.0.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2389e7aaaa6717dc8e9207709141674181f393e1d4a7dbce9e1e072d1ceeb4bb"},
-    {file = "gp_core-6.0.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2f88bdfc10c358aea54a5416077972a1f501ff99427a0e82d7f7d99d02a75901"},
-    {file = "gp_core-6.0.0-pp310-pypy310_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5ed5586b3b04d5e798c81f91fe94e48d0a244ac472268d2d1c4f202f20d882ab"},
-    {file = "gp_core-6.0.0-pp311-pypy311_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f80fc13d71e9a4c4ab80023a4ab411a823ddd378d33b9c2aab19cd41d16cafd3"},
-    {file = "gp_core-6.0.0.tar.gz", hash = "sha256:1836f59636d21a76c7dfb1724db60e13e01c367bb005fd1b7d3f074956fe8b4c"},
+    {file = "gp_core-6.0.1-cp310-cp310-macosx_10_14_x86_64.macosx_11_0_arm64.macosx_10_14_universal2.whl", hash = "sha256:1e3d134576c748020a430caa4f702aca11a3e986e81eab884627dde191dab824"},
+    {file = "gp_core-6.0.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:784c84395c2f346101956d6c4fe3bc6508d216f78588147ca75ac32bf6d83f3d"},
+    {file = "gp_core-6.0.1-cp310-cp310-manylinux_2_35_x86_64.whl", hash = "sha256:2cc3eebe1cbedb7085b92cb3a7723d9a0cb4b8499a4dccc29da77904dc0af134"},
+    {file = "gp_core-6.0.1-cp310-cp310-win_amd64.whl", hash = "sha256:6705d496056037943fc09a04bc6b39ce5029fdeab1e35e1f8f5ffafdcb28fad4"},
+    {file = "gp_core-6.0.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:eacaf6fed96f489f5f15ab3b5412b358bb4bc9c7e45634f7515967e3fb5fce74"},
+    {file = "gp_core-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ce82d14dd30e51b6156fcc27c707edb8a028580d9eab95b9d272d503c4c2bc4d"},
+    {file = "gp_core-6.0.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:5c1c280421fc46490cfaccba6926e498208275ccf61470c476d12a97c56601ab"},
+    {file = "gp_core-6.0.1-pp310-pypy310_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2f1bc2df475ec94a80e1d3cfc5fdeb797eeb98f8c5203434984fdb624a058fb3"},
+    {file = "gp_core-6.0.1-pp311-pypy311_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:98533fbead8ec8fdfd4ba37453947c20858097ea6b89808561f5a40d907033c7"},
+    {file = "gp_core-6.0.1.tar.gz", hash = "sha256:25fa484bb72fec3f3dabf544984882bca14638c603d680ebba9c2106c04af4aa"},
 ]
 
 [[package]]
@@ -4584,7 +4584,7 @@ files = [
 name = "sm-datasets"
 version = "2.0.4"
 description = "Datasets for benchmarking Semantic Modeling problem"
-optional = true
+optional = false
 python-versions = "^3.10"
 files = []
 develop = false
@@ -5890,4 +5890,4 @@ pyserini = ["pyserini-install"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.13"
-content-hash = "61124f20906ca66b4fce6cdb5cd715c34999effd10db9437344c4241e16c153f"
+content-hash = "7ddf2e95d71782a22d643da05c8c5e9eff65147133a04a05a812fb345bccf6b7"
