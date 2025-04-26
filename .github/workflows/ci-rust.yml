@@ -25,7 +25,8 @@ jobs:
             3.10
       - name: Discover python
         run: |
-          echo "PYTHONS=$(python .github/workflows/pydiscovery.py --min-version 3.10 --delimiter ' ' --root-dir ${{ runner.tool_cache }}/Python)" >> "$GITHUB_ENV"
+          pip install wherepy
+          echo "PYTHONS=$(python wherepy --min-version 3.10 --delimiter ' ' --search-dir ${{ runner.tool_cache }}/Python)" >> "$GITHUB_ENV"
       - name: Cache Python packages
         run: |
           cat $GITHUB_ENV
