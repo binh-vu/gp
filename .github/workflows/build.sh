@@ -84,7 +84,8 @@ fi
 
 # ##############################################
 echo "::group::Discovering Python"
-IFS=':' read -a PYTHON_HOMES < <(MINIMUM_PYTHON_VERSION=3.10 python $SCRIPT_DIR/pydiscovery.py)
+pip install wherepy  # to find local Python interpreters
+IFS=':' read -a PYTHON_HOMES < <(python -m wherepy --minimum-version 3.10 --python-homes "$PYTHON_HOMES")
 if [ ${#PYTHON_HOMES[@]} -eq 0 ]; then
     echo "No Python found. Did you forget to set any environment variable PYTHON_HOME or PYTHON_HOMES?"
 else
