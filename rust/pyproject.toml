@@ -1,6 +1,6 @@
 [project]
 name = "gp_core"
-version = "6.0.0"
+version = "6.0.1"
 description = "A library to build semantic descriptions of tables"
 readme = "README.md"
 authors = [{ name = "Binh Vu", email = "bvu687@gmail.com" }]

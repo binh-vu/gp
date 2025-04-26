@@ -14,6 +14,7 @@ from typing import (
     Union,
 )
 
+from gp.misc.evaluation.sm_wikidata import SemanticModelHelper
 from gp_core.models import GramsDB, LocalGramsDB, RemoteGramsDB
 from kgdata.db import GenericDB
 from kgdata.models import Ontology
@@ -24,8 +25,6 @@ from sm.misc.prelude import import_attr
 from sm.misc.ray_helper import get_instance
 from sm.namespaces.namespace import KnowledgeGraphNamespace
 from sm.namespaces.utils import KGName, get_kgns
-
-from gp.misc.evaluation.sm_wikidata import SemanticModelHelper
 
 
 @dataclass
@@ -151,5 +150,4 @@ class KGDB:
             return db
         return get_instance(
             lambda: KGDB(db), f"kgdb:{db.name}:{db.version}:{db.datadir}"
-        )
         )
