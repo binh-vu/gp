@@ -26,7 +26,7 @@ jobs:
       - name: Discover python
         run: |
           pip install wherepy
-          echo "PYTHONS=$(python -m wherepy --min-version 3.10 --delimiter ' ' --search-dir ${{ runner.tool_cache }}/Python)" >> "$GITHUB_ENV"
+          echo "PYTHONS=$(python -m wherepy --minimum-version 3.10 --delimiter ' ' --search-dir ${{ runner.tool_cache }}/Python)" >> "$GITHUB_ENV"
       - name: Cache Python packages
         run: |
           cat $GITHUB_ENV
