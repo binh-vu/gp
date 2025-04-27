@@ -1,4 +1,4 @@
-name: CI Rust
+name: CI Maturin
 
 on:
   push:
@@ -19,10 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: |
-            3.12
-            3.11
-            3.10
+          python-version: "3.10 3.11 3.12"
       - name: Discover python
         run: |
           pip install wherepy
@@ -67,11 +64,9 @@ jobs:
       - name: Build wheels
         run: |
           docker run --rm -w /project/rust -v $(pwd):/project \
-            -e EXTRA_PATH=/opt/python/cp310-cp310/bin \
-            -e PYTHON_ROOT_DIR=/opt/python \
+            -e PYTHON_VERSION="3.10 3.11 3.12" \
             -e CARGO_NET_GIT_FETCH_WITH_CLI=false \
-            quay.io/pypa/manylinux2014_x86_64:latest \
-            bash /project/.github/workflows/build.sh -t x86_64-unknown-linux-gnu
+            toan2/manylinux2014_x86_64:latest
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -82,7 +77,7 @@ jobs:
     name: Release Crates.io
     runs-on: ubuntu-22.04
     if: ${{ startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/dev-ci') }}
-    needs: [build, build-manylinux]
+    needs: [build]
     steps:
       - uses: actions/checkout@v3
       - name: Publish to Crates
@@ -96,7 +91,7 @@ jobs:
   release-pypi:
     name: Release PyPI.org
     runs-on: ubuntu-22.04
-    # if: ${{ startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/dev-ci') }}
+    if: ${{ startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/master') || startsWith(github.ref, 'refs/heads/dev-ci') }}
     needs: [build, build-manylinux]
     steps:
       - uses: actions/download-artifact@v4
