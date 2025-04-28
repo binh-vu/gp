@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-import gramsplus.core.literal_matchers as gcore_matcher
+import gp_core.literal_matchers as gcore_matcher
 
 
 @dataclass

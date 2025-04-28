@@ -12,12 +12,12 @@ from gp.misc.conversions import to_rust_table
 from gp.semanticmodeling import text_parser
 from gp.semanticmodeling.cangraph_cfg import CanGraphExtractorCfg
 from gp.semanticmodeling.text_parser import TextParser, TextParserConfigs
-from gramsplus.core.algorithms import (
+from gp_core.algorithms import (
     CanGraphExtractedResult,
     extract_cangraph,
     par_extract_cangraphs,
 )
-from gramsplus.core.models import TableCells
+from gp_core.models import TableCells
 from ream.prelude import BaseActor, Cache
 from sm.dataset import Example, FullTable
 from sm.misc.ray_helper import enhance_error_info, ray_map, ray_put

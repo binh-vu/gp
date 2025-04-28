@@ -18,8 +18,8 @@ from gp.semanticmodeling.postprocessing.cgraph import CGraph
 from gp.semanticmodeling.postprocessing.greedy_known_targets import GreedyKnownTargetsFn
 from gp.semanticmodeling.postprocessing.interface import EdgeProb, NodeProb
 from gp.semanticmodeling.postprocessing.steiner_tree import SteinerTreeFn
+from gp_core.algorithms import CanGraphExtractedResult
 from gramsplus.actors.data import PredictionTargets
-from gramsplus.core.algorithms import CanGraphExtractedResult
 from ream.cache_helper import Cache, FileBackend, MemBackend
 from ream.prelude import BaseActor
 from sm.dataset import Example, FullTable

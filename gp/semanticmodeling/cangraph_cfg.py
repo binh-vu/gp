@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from gramsplus.core.algorithms import CanGraphExtractorConfig
-from gramsplus.semanticmodeling.literal_matcher import LiteralMatcherConfig
+from gp.semanticmodeling.literal_matcher import LiteralMatcherConfig
+from gp_core.algorithms import CanGraphExtractorConfig
 
 
 @dataclass
