@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import gp_core as gcore
+from gp.el.candidate_generation.cangen_model import TableCandidateEntities
 from sm.dataset import Example, FullTable
 from sm.inputs.column import Column
 from sm.inputs.link import Link
-
-from gp.el.candidate_generation.cangen_model import TableCandidateEntities
 
 
 def to_rust_table(
@@ -74,5 +73,4 @@ def to_rust_table(
             None,
             [],
         ),
-    )
     )

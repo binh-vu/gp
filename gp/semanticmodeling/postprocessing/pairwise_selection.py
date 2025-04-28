@@ -1,17 +1,13 @@
 from typing import Dict
 
-from graph.retworkx.api import digraph_all_simple_paths
-from sm.dataset import FullTable
-
-from gramsplus.semanticmodeling.postprocessing.cgraph import (
-    CGEdgeTriple,
-    CGraph,
-)
-from gramsplus.semanticmodeling.postprocessing.common import (
+from gp.semanticmodeling.postprocessing.cgraph import CGEdgeTriple, CGraph
+from gp.semanticmodeling.postprocessing.common import (
     add_context,
     ensure_valid_statements,
 )
-from gramsplus.semanticmodeling.postprocessing.config import PostprocessingConfig
+from gp.semanticmodeling.postprocessing.config import PostprocessingConfig
+from graph.retworkx.api import digraph_all_simple_paths
+from sm.dataset import FullTable
 
 
 class PairwiseSelection:

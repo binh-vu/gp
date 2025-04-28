@@ -1,20 +1,19 @@
 from typing import Dict, List, Optional, Tuple
 
 import networkx as nx
-from graph.interface import BaseNode
-from sm.dataset import FullTable
-
-from gramsplus.semanticmodeling.postprocessing.cgraph import (
+from gp.semanticmodeling.postprocessing.cgraph import (
     CGEdge,
     CGEdgeTriple,
     CGNode,
     CGraph,
 )
-from gramsplus.semanticmodeling.postprocessing.common import (
+from gp.semanticmodeling.postprocessing.common import (
     add_context,
     ensure_valid_statements,
 )
-from gramsplus.semanticmodeling.postprocessing.config import PostprocessingConfig
+from gp.semanticmodeling.postprocessing.config import PostprocessingConfig
+from graph.interface import BaseNode
+from sm.dataset import FullTable
 
 
 class MinimumArborescence:

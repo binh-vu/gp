@@ -5,12 +5,10 @@ import lightning.pytorch as pl
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from gp.misc.dataset import ColumnarDataset
+from gp.semanticmodeling.models.pretrained_models import BaseTorchCPAModel
 from sm.misc.funcs import assert_not_null
 from torchmetrics import F1Score, Precision, Recall
-
-from gramsplus.misc.dataset import ColumnarDataset
-from gramsplus.semanticmodeling.models.pretrained_models import BaseTorchCPAModel
-from scripts.www24.stores.cpa_store import CPAStore
 
 
 @dataclass

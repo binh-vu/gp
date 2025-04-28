@@ -8,7 +8,18 @@ from typing import Literal, Optional
 
 import ray
 from libraries.gp.gp.actors.data._db import KGDB, DBActor, DBActorArgs
-from gramsplus.distantsupervision.make_dataset.prelude import (
+from ream.cache_helper import MemBackend
+from ream.dataset_helper import DatasetList, DatasetQuery
+from ream.params_helper import NoParams
+from ream.prelude import BaseActor, Cache
+from ream.workspace import ReamWorkspace
+from sm.dataset import Dataset, Example, FullTable
+from sm.inputs.prelude import EntityIdWithScore
+from sm.misc.ray_helper import get_instance, ray_map, ray_put
+from sm.namespaces.utils import KGName
+from sm_datasets.datasets import Datasets
+
+from gp.distantsupervision.make_dataset.prelude import (
     CombinedFilter,
     CombinedFilterArgs,
     EntityRecognitionV1,
@@ -35,20 +46,8 @@ from gramsplus.distantsupervision.make_dataset.prelude import (
     TransformV1Args,
     TransformV2,
 )
-from gramsplus.entity_linking.candidate_recognition.heuristic_model import (
-    HeuristicCanRegArgs,
-)
-from gramsplus.semanticmodeling.text_parser import TextParser
-from ream.cache_helper import MemBackend
-from ream.dataset_helper import DatasetList, DatasetQuery
-from ream.params_helper import NoParams
-from ream.prelude import BaseActor, Cache
-from ream.workspace import ReamWorkspace
-from sm.dataset import Dataset, Example, FullTable
-from sm.inputs.prelude import EntityIdWithScore
-from sm.misc.ray_helper import get_instance, ray_map, ray_put
-from sm.namespaces.utils import KGName
-from sm_datasets.datasets import Datasets
+from gp.entity_linking.candidate_recognition.heuristic_model import HeuristicCanRegArgs
+from gp.semanticmodeling.text_parser import TextParser
 
 
 @dataclass
@@ -408,7 +407,7 @@ class AutoLabeledDataActor(BaseActor[AutoLabelDataActorArgs]):
 
     @staticmethod
     def get_instance(
-        args: AutoLabeledDataActor | tuple[str, AutoLabelDataActorArgs, DBActorArgs]
+        args: AutoLabeledDataActor | tuple[str, AutoLabelDataActorArgs, DBActorArgs],
     ):
         if isinstance(args, AutoLabeledDataActor):
             return args

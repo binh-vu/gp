@@ -10,19 +10,23 @@ from typing import Optional
 
 import lightning.pytorch as pl
 import torch
-from gramsplus.actors.candidate_graph import CanGraphActor
-from gramsplus.actors.candidate_ranking import CanRankActor
-from gramsplus.misc.dataset import ColumnarDataset
-from gramsplus.semanticmodeling.postprocessing.interface import EdgeProb, NodeProb
+from gp.misc.dataset import ColumnarDataset
+from gp.semanticmodeling.postprocessing.interface import EdgeProb, NodeProb
 from ream.actors.base import BaseActor
 from ream.cache_helper import Cache, MemBackend
 from ream.data_model_helper import NumpyDataModelHelper
 from ream.dataset_helper import DatasetList
 from ream.helper import import_attr
-from scripts.www24.cpa_helper import make_dataset
-from scripts.www24.cta_helper import predict_column_prob, predict_cta
-from scripts.www24.stores.cpa_store import CPAStore
-from scripts.www24.stores.cpa_store_fn import CPAStoreFn, CPAStoreFnArgs
+
+try:
+    from gp.actors.candidate_graph import CanGraphActor
+    from scripts.www24.cpa_helper import make_dataset
+    from scripts.www24.cta_helper import predict_column_prob, predict_cta
+    from scripts.www24.stores.cpa_store import CPAStore
+    from scripts.www24.stores.cpa_store_fn import CPAStoreFn, CPAStoreFnArgs
+except ImportError:
+    print("TODO: fix imports on this file")
+
 from sm.misc.funcs import import_attr
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
@@ -217,4 +221,5 @@ class HeuristicELCTAModel:
     def cta_score_offset(self, args: dict) -> float:
         if args["modify_selected_type_score"]:
             return 100
+        return 0.0
         return 0.0

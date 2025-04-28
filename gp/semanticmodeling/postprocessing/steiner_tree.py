@@ -5,23 +5,6 @@ from copy import copy
 from operator import itemgetter
 from typing import Literal, Optional, cast
 
-from gramsplus.semanticmodeling.postprocessing.cgraph import (
-    CGEdge,
-    CGEdgeTriple,
-    CGNode,
-    CGraph,
-)
-from gramsplus.semanticmodeling.postprocessing.common import (
-    add_context,
-    ensure_valid_statements,
-)
-from gramsplus.semanticmodeling.postprocessing.config import PostprocessingConfig
-from gramsplus.semanticmodeling.postprocessing.interface import (
-    EdgeProb,
-    NodeProb,
-    PostprocessingFn,
-    PostprocessingResult,
-)
 from graph.retworkx.api import dag_longest_path, has_cycle
 from sm.dataset import FullTable
 from steiner_tree.bank.solver import PSEUDO_ROOT_ID, BankSolver
@@ -32,6 +15,24 @@ from steiner_tree.bank.struct import (
     NoSingleRootException,
     Solution,
     UpwardTraversal,
+)
+
+from gp.semanticmodeling.postprocessing.cgraph import (
+    CGEdge,
+    CGEdgeTriple,
+    CGNode,
+    CGraph,
+)
+from gp.semanticmodeling.postprocessing.common import (
+    add_context,
+    ensure_valid_statements,
+)
+from gp.semanticmodeling.postprocessing.config import PostprocessingConfig
+from gp.semanticmodeling.postprocessing.interface import (
+    EdgeProb,
+    NodeProb,
+    PostprocessingFn,
+    PostprocessingResult,
 )
 
 
@@ -263,9 +264,9 @@ class BankSteinerTree(BankSolver[CGNode, CGEdge]):
                         update_graph = False
                         for n in pg.iter_nodes():
                             if pg.in_degree(n.id) >= 2:
-                                grand_parents: dict[
-                                    str, list[tuple[BankEdge, ...]]
-                                ] = defaultdict(list)
+                                grand_parents: dict[str, list[tuple[BankEdge, ...]]] = (
+                                    defaultdict(list)
+                                )
                                 for inedge in pg.in_edges(n.id):
                                     grand_parents[inedge.source].append((inedge,))
                                     for grand_inedge in pg.in_edges(inedge.source):
@@ -279,9 +280,11 @@ class BankSteinerTree(BankSolver[CGNode, CGEdge]):
                                         # they have the same length, so we select the one has smaller weight
                                         edges = sorted(
                                             edges,
-                                            key=lambda x: x[0].weight + x[1].weight
-                                            if len(x) == 2
-                                            else x[0].weight * 2,
+                                            key=lambda x: (
+                                                x[0].weight + x[1].weight
+                                                if len(x) == 2
+                                                else x[0].weight * 2
+                                            ),
                                         )
 
                                         for lst in edges[1:]:
@@ -349,4 +352,5 @@ class BankSteinerTree(BankSolver[CGNode, CGEdge]):
                             copy(self.graph.get_node(main_prop.target))
                         )
                         assert target_id == main_prop.target
+                    g.add_edge(main_prop.clone())
                     g.add_edge(main_prop.clone())

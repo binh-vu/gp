@@ -5,17 +5,16 @@ from operator import itemgetter
 from typing import Sequence
 
 import sm.misc as M
-from graph.retworkx.api import digraph_all_simple_paths
-from sm.dataset import FullTable
-from sm.misc.funcs import assert_not_null
-
-from gramsplus.semanticmodeling.postprocessing.cgraph import CGraph
-from gramsplus.semanticmodeling.postprocessing.interface import (
+from gp.semanticmodeling.postprocessing.cgraph import CGraph
+from gp.semanticmodeling.postprocessing.interface import (
     EdgeProb,
     NodeProb,
     PostprocessingFn,
     PostprocessingResult,
 )
+from graph.retworkx.api import digraph_all_simple_paths
+from sm.dataset import FullTable
+from sm.misc.funcs import assert_not_null
 
 
 class GreedyKnownTargetsFn(PostprocessingFn):

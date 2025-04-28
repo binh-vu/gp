@@ -18,11 +18,11 @@ class TextParserConfigs:
     """Configurations for the parser"""
 
     NUM_PARSER: str = field(
-        default="gramsplus.semanticmodeling.text_parser.BasicNumberParser",
+        default="gp.semanticmodeling.text_parser.BasicNumberParser",
         metadata={"help": "number parser"},
     )
     DATETIME_PARSER: str = field(
-        default="gramsplus.semanticmodeling.text_parser.BasicDatetimeParser",
+        default="gp.semanticmodeling.text_parser.BasicDatetimeParser",
         metadata={"help": "datetime parser"},
     )
 
@@ -98,15 +98,12 @@ class TextParser:
         self.cache = {}
         self.cfg = cfg
 
-        if (
-            cfg.DATETIME_PARSER
-            == "gramsplus.semanticmodeling.text_parser.BasicDatetimeParser"
-        ):
+        if cfg.DATETIME_PARSER == "gp.semanticmodeling.text_parser.BasicDatetimeParser":
             self.dt_parser = BasicDatetimeParser()
         else:
             raise NotImplementedError()
 
-        if cfg.NUM_PARSER == "gramsplus.semanticmodeling.text_parser.BasicNumberParser":
+        if cfg.NUM_PARSER == "gp.semanticmodeling.text_parser.BasicNumberParser":
             self.number_parser = BasicNumberParser()
         else:
             raise NotImplementedError()

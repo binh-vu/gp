@@ -5,7 +5,7 @@ from typing import Callable, Dict, List, Optional, Tuple
 from graph.retworkx.api import digraph_all_simple_paths
 from sm.dataset import FullTable
 
-from gramsplus.semanticmodeling.postprocessing.cgraph import (
+from gp.semanticmodeling.postprocessing.cgraph import (
     CGEdge,
     CGEdgeTriple,
     CGNode,

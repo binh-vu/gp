@@ -3,6 +3,16 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal, Optional, Sequence
 
+from gp_core.algorithms import CanGraphExtractedResult
+from ream.cache_helper import Cache, FileBackend, MemBackend
+from ream.prelude import BaseActor
+from sm.dataset import Example, FullTable
+from sm.misc.ray_helper import get_instance, ray_map, ray_put
+from sm.namespaces.wikidata import WikidataNamespace
+from sm.outputs.semantic_model import SemanticModel
+from sm.prelude import O
+
+from gp.actors.data import PredictionTargets
 from gp.actors.data.prelude import KGDB, DataActor, GPExample, KGDBArgs
 from gp.actors.sm.can_graph import CanGraphActor
 from gp.entity_linking.cangen.common import TableCanGenResult
@@ -18,15 +28,6 @@ from gp.semanticmodeling.postprocessing.cgraph import CGraph
 from gp.semanticmodeling.postprocessing.greedy_known_targets import GreedyKnownTargetsFn
 from gp.semanticmodeling.postprocessing.interface import EdgeProb, NodeProb
 from gp.semanticmodeling.postprocessing.steiner_tree import SteinerTreeFn
-from gp_core.algorithms import CanGraphExtractedResult
-from gramsplus.actors.data import PredictionTargets
-from ream.cache_helper import Cache, FileBackend, MemBackend
-from ream.prelude import BaseActor
-from sm.dataset import Example, FullTable
-from sm.misc.ray_helper import get_instance, ray_map, ray_put
-from sm.namespaces.wikidata import WikidataNamespace
-from sm.outputs.semantic_model import SemanticModel
-from sm.prelude import O
 
 PostprocessingMethod = Literal["greedy_known_targets", "steiner_tree"]
 OnUntypeSourceColumnNode = Literal["create-class", "remove-link"]
@@ -336,4 +337,5 @@ def postprocessing(
 
     return sm_helper.create_sm(
         nodes, cpa, cta, on_untype_source_column_node=on_untype_source_column_node
+    )
     )
