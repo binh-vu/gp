@@ -5,8 +5,9 @@ from functools import cached_property, lru_cache
 from linecache import cache
 from typing import Optional
 
-from gp.actors.data.prelude import KGDB, GPExample, KGDBArgs
+from gp.actors.data import KGDB, GPExample, KGDBArgs
 from gp.actors.el.canrank import CanRankActor
+from gp.entity_linking.candidate_generation.common import TableCanGenResult
 from gp.misc.appconfig import AppConfig
 from gp.misc.conversions import to_rust_table
 from gp.semanticmodeling import text_parser
@@ -18,6 +19,7 @@ from gp_core.algorithms import (
     par_extract_cangraphs,
 )
 from gp_core.models import TableCells
+from libactor.cache import BackendFactory, IdentObj, cache
 from ream.prelude import BaseActor, Cache
 from sm.dataset import Example, FullTable
 from sm.misc.ray_helper import enhance_error_info, ray_map, ray_put
@@ -59,20 +61,22 @@ class CanGraphActor(BaseActor[CanGraphActorArgs]):
     def ru_cangraph_extractor(self):
         return self.params.cangraph_extractor.to_rust()
 
-    @Cache.cache(
-        backend=Cache.sqlite.pickle(
-            filename="cangraph", mem_persist=True, compression="lz4"
-        ),
-        cache_key=lambda self, example, parallel=True: example.id,
-        disable=lambda self: not AppConfig.get_instance().is_cache_enable,
+    @cache(
+        backend=BackendFactory.actor.sqlite.pickle(mem_persist=True),
     )
-    def __call__(self, ex: GPExample, parallel: bool = True) -> CanGraphExtractedResult:
-        cans = self.get_candidate_entities([ex])[0]
+    def invoke(
+        self,
+        example: IdentObj[Example[FullTable]],
+        can_ent: IdentObj[TableCanGenResult],
+        kgdb: IdentObj[KGDB],
+        parallel: bool = True,
+    ):
+        ex = example.value
         nrows, ncols = ex.table.table.shape()
         text_parser = self.text_parser
 
         return extract_cangraph(
-            to_rust_table(ex, cans),
+            to_rust_table(ex, can_ent),
             TableCells(
                 [
                     [
@@ -82,7 +86,7 @@ class CanGraphActor(BaseActor[CanGraphActorArgs]):
                     for ri in range(nrows)
                 ]
             ),
-            self.db_actor.kgdbs[ex.kgname].rudb,
+            kgdb.value.rudb,
             self.ru_cangraph_extractor,
             None,
             parallel=parallel,

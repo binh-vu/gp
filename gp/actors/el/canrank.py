@@ -5,8 +5,11 @@ from typing import Sequence
 
 from gp.actors.data.prelude import GPExample
 from gp.actors.el.cangen import CanGenActor
-from gp.entity_linking.cangen.common import TableCanGenResult
-from gp.entity_linking.canrank.common import CanRankMethod, TableCanGenUpdateScores
+from gp.entity_linking.candidate_generation.common import TableCanGenResult
+from gp.entity_linking.candidate_ranking.common import (
+    CanRankMethod,
+    TableCanGenUpdateScores,
+)
 from gp.misc.appconfig import AppConfig
 from gp.misc.evaluation.el_osin_mixin import EntityLinkingOsinActorMixin
 from ream.actors.base import BaseActor

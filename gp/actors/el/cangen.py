@@ -3,19 +3,15 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal, Optional, Sequence
 
-from gp.actors.data.prelude import GPExample
+from gp.actors.data import GPExample
 from gp.actors.el.canreg import CanRegActor
-from gp.entity_linking.cangen.common import CanEnt, CanGenMethod, TableCanGenResult
-
-# from gp.entity_linking.cangen.localsearch import LocalSearch, LocalSearchArgs
-from gp.entity_linking.cangen.oracle_model import CanGenOracleMethod
+from gp.entity_linking.candidate_generation.common import (
+    CanEnt,
+    CanGenMethod,
+    TableCanGenResult,
+)
+from gp.entity_linking.candidate_generation.oracle_model import CanGenOracleMethod
 from gp.misc.appconfig import AppConfig
-from gp.misc.evaluation.el_osin_mixin import EntityLinkingOsinActorMixin
-from ream.actor_version import ActorVersion
-from ream.actors.base import BaseActor
-from ream.cache_helper import Cache, MemBackend
-from ream.helper import import_attr
-from ream.params_helper import PluginParams
 from sm.namespaces.utils import KGName
 
 
@@ -42,9 +38,7 @@ class CanGenActorArgs(PluginParams):
     )
 
 
-class CanGenActor(
-    EntityLinkingOsinActorMixin[CanGenActorArgs], BaseActor[CanGenActorArgs]
-):
+class CanGenActor(Actor[CanGenActorArgs], BaseActor[CanGenActorArgs]):
     """Generate candidate entities for cells in a table."""
 
     # VERSION = ActorVersion.create(100, [LocalSearch])

@@ -82,6 +82,7 @@ class DataActor(Actor[DataActorArgs]):
         dataset = DatasetQuery.from_string(dsquery).dataset
 
         assert dataset.startswith("semtab")
+        assert Datasets is not None, "sm_datasets is not available. Please install it."
         loc = Datasets().get_dataset(dataset).location
 
         cea_target_file = loc / "CEA_targets.csv"
@@ -162,6 +163,9 @@ class DataActor(Actor[DataActorArgs]):
             assert Path(dataset).exists()
             examples = Dataset(Path(dataset)).load()
         else:
+            assert (
+                Datasets is not None
+            ), "sm_datasets is not available. Please install it."
             ds = Datasets()
             db = self.get_kgdb(dataset).pydb
             entity_labels = db.entity_labels.cache()
