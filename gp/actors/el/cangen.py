@@ -3,20 +3,27 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal, Optional, Sequence
 
-from gp.actors.data import GPExample
+from gp.actors.data import KGDB, GPExample
 from gp.actors.el.canreg import CanRegActor
 from gp.entity_linking.candidate_generation.common import (
     CanEnt,
+    CanGenBasicMethod,
     CanGenMethod,
     TableCanGenResult,
 )
 from gp.entity_linking.candidate_generation.oracle_model import CanGenOracleMethod
 from gp.misc.appconfig import AppConfig
+from libactor.actor import Actor
+from libactor.cache import BackendFactory, IdentObj, cache, fmt_keys
+from sm.dataset import Example, FullTable
+from sm.misc.funcs import import_attr
 from sm.namespaces.utils import KGName
 
 
 @dataclass
-class CanGenActorArgs(PluginParams):
+class CanGenActorArgs:
+    clspath: str | type
+    clsargs: dict | object = field(default_factory=dict)
     # localsearch: Optional[LocalSearchArgs] = field(
     #     default=None,
     #     metadata={
@@ -38,7 +45,7 @@ class CanGenActorArgs(PluginParams):
     )
 
 
-class CanGenActor(Actor[CanGenActorArgs], BaseActor[CanGenActorArgs]):
+class CanGenActor(Actor[CanGenActorArgs]):
     """Generate candidate entities for cells in a table."""
 
     # VERSION = ActorVersion.create(100, [LocalSearch])
@@ -49,60 +56,74 @@ class CanGenActor(Actor[CanGenActorArgs], BaseActor[CanGenActorArgs]):
     def __init__(
         self,
         params: CanGenActorArgs,
-        canreg_actor: CanRegActor,
     ):
-        super().__init__(params, dep_actors=[canreg_actor])
+        super().__init__(params)
 
-        self.canreg_actor = canreg_actor
-        self.db_actor = canreg_actor.db_actor
+    def forward(
+        self,
+        example: IdentObj[Example[FullTable]],
+        ent_cols: IdentObj[list[int]],
+        kgdb: IdentObj[KGDB],
+    ) -> IdentObj[TableCanGenResult]:
+        value = self.invoke(example, ent_cols, kgdb)
+        return IdentObj(
+            key=fmt_keys(
+                self.key,
+                ex=example.key,
+                entcols=ent_cols.key,
+            ),
+            value=value,
+        )
 
-    @Cache.cache(
-        backend=Cache.sqlite.serde(
-            cls=TableCanGenResult, filename="cangen", mem_persist=True
-        ),
-        cache_key=lambda self, example: example.id,
-        disable=lambda self: not AppConfig.get_instance().is_cache_enable,
+    @cache(
+        backend=BackendFactory.actor.sqlite.pickle(mem_persist=True),
     )
-    def __call__(self, example: GPExample) -> TableCanGenResult:
-        ent_col = self.canreg_actor(example)
-        res = self.get_method(example.kgname).get_candidates([example], [ent_col])[0]
-        return self.fixed_redirections(example.kgname, example.table.table.shape(), res)
+    def invoke(
+        self,
+        example: IdentObj[Example[FullTable]],
+        ent_cols: IdentObj[list[int]],
+        kgdb: IdentObj[KGDB],
+    ) -> TableCanGenResult:
+        res = self.get_method(kgdb).get_candidates([example.value], [ent_cols.value])[0]
+        return self.fixed_redirections(
+            kgdb.value, example.value.table.table.shape(), res
+        )
 
-    @Cache.flat_cache(
-        backend=Cache.sqlite.serde(
-            cls=TableCanGenResult, filename="cangen", mem_persist=True
-        ),
-        cache_key=lambda self, example, verbose=False: example.id,
-        disable=lambda self: not AppConfig.get_instance().is_cache_enable,
-    )
-    def batch_call(
-        self, examples: Sequence[GPExample], verbose: bool = False
-    ) -> list[TableCanGenResult]:
-        if len(examples) == 0:
-            return []
+    # @Cache.flat_cache(
+    #     backend=Cache.sqlite.serde(
+    #         cls=TableCanGenResult, filename="cangen", mem_persist=True
+    #     ),
+    #     cache_key=lambda self, example, verbose=False: example.id,
+    #     disable=lambda self: not AppConfig.get_instance().is_cache_enable,
+    # )
+    # def batch_call(
+    #     self, examples: Sequence[GPExample], verbose: bool = False
+    # ) -> list[TableCanGenResult]:
+    #     if len(examples) == 0:
+    #         return []
 
-        kgname = examples[0].kgname
-        assert all(ex.kgname == kgname for ex in examples)
+    #     kgname = examples[0].kgname
+    #     assert all(ex.kgname == kgname for ex in examples)
 
-        ent_cols = [self.canreg_actor(ex) for ex in examples]
-        return [
-            self.fixed_redirections(kgname, examples[ei].table.table.shape(), res)
-            for ei, res in enumerate(
-                self.get_method(kgname).get_candidates(
-                    examples, ent_cols, verbose=verbose
-                )
-            )
-        ]
+    #     ent_cols = [self.canreg_actor(ex) for ex in examples]
+    #     return [
+    #         self.fixed_redirections(kgname, examples[ei].table.table.shape(), res)
+    #         for ei, res in enumerate(
+    #             self.get_method(kgname).get_candidates(
+    #                 examples, ent_cols, verbose=verbose
+    #             )
+    #         )
+    #     ]
 
-    def get_candidate_entities(
-        self, examples: list[GPExample]
-    ) -> list[TableCanGenResult]:
-        return self.batch_call(examples)
+    # def get_candidate_entities(
+    #     self, examples: list[GPExample]
+    # ) -> list[TableCanGenResult]:
+    #     return self.batch_call(examples)
 
     def fixed_redirections(
-        self, kgname: KGName, shp: tuple[int, int], res: TableCanGenResult
+        self, kgdb: KGDB, shp: tuple[int, int], res: TableCanGenResult
     ) -> TableCanGenResult:
-        ent_redirections = self.db_actor.kgdbs[kgname].pydb.entity_redirections.cache()
+        ent_redirections = kgdb.pydb.entity_redirections.cache()
 
         if any(id in ent_redirections for id in res.ent_id):
             res = TableCanGenResult.from_matrix(
@@ -114,23 +135,23 @@ class CanGenActor(Actor[CanGenActorArgs], BaseActor[CanGenActorArgs]):
             )
         return res
 
-    def is_oracle_entity_linking(self, kgname: KGName) -> bool:
-        return isinstance(
-            self.get_method(kgname), CanGenOracleMethod
-        ) and self.canreg_actor.is_oracle_entity_linking(kgname)
+    # def is_oracle_entity_linking(self, kgname: KGName) -> bool:
+    #     return isinstance(
+    #         self.get_method(kgname), CanGenOracleMethod
+    #     ) and self.canreg_actor.is_oracle_entity_linking(kgname)
 
-    @Cache.cache(backend=MemBackend())
-    def get_method(self, kgname: KGName) -> CanGenMethod:
-        kgdb = self.db_actor.kgdbs[kgname]
+    @cache(backend=BackendFactory.actor.mem)
+    def get_method(self, kgdb: IdentObj[KGDB]) -> CanGenMethod:
         if isinstance(self.params.clspath, str):
             cls = import_attr(self.params.clspath)
         else:
             cls = self.params.clspath
 
+        if issubclass(cls, CanGenBasicMethod):
+            return cls(kgdb.value, self.params.clsargs)
         if isinstance(self.params.clsargs, dict):
-            return cls(kgdb, **self.params.clsargs)
-
-        return cls(kgdb, self.params.clsargs)
+            return cls(**self.params.clsargs)
+        return cls(self.params.clsargs)
 
     # @Cache.cache(
     #     backend=Cache.cls.dir(

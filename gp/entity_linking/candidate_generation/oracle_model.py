@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from gp.actors.data import KGDB, GPExample
+from typing import Sequence
+
 from gp.entity_linking.candidate_generation.common import (
     CanEnt,
     CanGenMethod,
     TableCanGenResult,
 )
+from sm.dataset import Example, FullTable
 from sm.inputs.prelude import Link
 
 
@@ -17,8 +19,8 @@ class CanGenOracleMethod(CanGenMethod):
 
     def get_candidates(
         self,
-        examples: list[GPExample],
-        entity_columns: list[list[int]],
+        examples: Sequence[Example[FullTable]],
+        entity_columns: Sequence[Sequence[int]],
     ) -> list[TableCanGenResult]:
         output = []
 

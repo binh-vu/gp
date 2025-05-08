@@ -23,7 +23,7 @@ class CanRegActor(Actor[CanRegActorArgs]):
         self, input: IdentObj[Example[FullTable]], ontology: IdentObj[Ontology]
     ) -> IdentObj[list[int]]:
         ent_cols = self.invoke(input, ontology)
-        return IdentObj(str(ent_cols), ent_cols)
+        return IdentObj(key=str(ent_cols), value=ent_cols)
 
     @cache(
         backend=BackendFactory.actor.sqlite.pickle(mem_persist=True),

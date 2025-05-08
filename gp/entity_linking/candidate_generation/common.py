@@ -9,15 +9,13 @@ from typing import Annotated, Dict, Iterable, List, Optional, Sequence, TypeVar
 
 import numpy as np
 import orjson
-from gp.actors.data import KGDB, GPExample, KGDBArgs
+from gp.actors.data import KGDB, KGDBArgs
 from gp.misc.appconfig import AppConfig
 from hugedict.prelude import RocksDBDict, RocksDBOptions
 from libactor.actor import Actor
 from loguru import logger
 from sm.dataset import Example, FullTable
-from sm.misc.funcs import batch
 from sm.misc.matrix import Matrix
-from sm.misc.ray_helper import ray_map, ray_put
 from smml.data_model_helper import NumpyDataModel
 from tqdm.auto import tqdm
 
@@ -117,20 +115,20 @@ class CanGenMethod:
     @abstractmethod
     def get_candidates(
         self,
-        examples: Sequence[GPExample],
+        examples: Sequence[Example[FullTable]],
         entity_columns: Sequence[list[int]],
         verbose: bool = False,
     ) -> list[TableCanGenResult]:
         pass
 
 
-class CanGenBasicMethod(CanGenMethod, Actor[P]):
+class CanGenBasicMethod(CanGenMethod, Actor[dict]):
     """Candidate generation method that find candidates from text"""
 
     def __init__(
         self,
         kgdb: KGDB,
-        params: P,
+        params: dict,
         batch_size: Optional[int] = None,
         soft_limit: int = 1000,
         is_cache_enable: Optional[bool] = None,

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Sequence
 
-from gp.actors.data.prelude import GPExample
+from gp.actors.data import GPExample
 from gp.actors.el.cangen import CanGenActor
 from gp.entity_linking.candidate_generation.common import TableCanGenResult
 from gp.entity_linking.candidate_ranking.common import (
@@ -11,21 +11,16 @@ from gp.entity_linking.candidate_ranking.common import (
     TableCanGenUpdateScores,
 )
 from gp.misc.appconfig import AppConfig
-from gp.misc.evaluation.el_osin_mixin import EntityLinkingOsinActorMixin
-from ream.actors.base import BaseActor
-from ream.cache_helper import Cache, MemBackend
-from ream.helper import import_attr
-from ream.params_helper import PluginParams
+from libactor.actor import Actor
 
 
 @dataclass
-class CanRankActorArgs(PluginParams):
-    pass
+class CanRankActorArgs:
+    clspath: str | type
+    clsargs: dict | object = field(default_factory=dict)
 
 
-class CanRankActor(
-    EntityLinkingOsinActorMixin[CanRankActorArgs], BaseActor[CanRankActorArgs]
-):
+class CanRankActor(Actor[CanRankActorArgs]):
     """Rank candidate entities for cells in a table."""
 
     VERSION = 103

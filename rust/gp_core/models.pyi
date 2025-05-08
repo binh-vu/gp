@@ -1,9 +1,8 @@
 import enum
 from typing import Optional, TypeAlias
 
-from kgdata_core.models import EntityMetadata, Property, StatementView, Value, ValueView
-
 from gp_core.literal_matchers import ParsedTextRepr
+from kgdata_core.models import EntityMetadata, Property, StatementView, Value, ValueView
 
 class LocalGramsDB:
     def __init__(self, datadir: str) -> None: ...
@@ -173,5 +172,4 @@ __all__ = [
     "MatchMethod",
     "CGNode",
     "CGColumnNode",
-]
 ]
