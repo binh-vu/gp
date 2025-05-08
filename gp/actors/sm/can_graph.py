@@ -47,11 +47,9 @@ class CanGraphActorArgs:
 class CanGraphActor(BaseActor[CanGraphActorArgs]):
     VERSION = 117
 
-    def __init__(self, params: CanGraphActorArgs, canrank_actor: CanRankActor):
-        super().__init__(params, dep_actors=[canrank_actor])
-
-        self.canrank_actor = canrank_actor
-        self.db_actor = canrank_actor.db_actor
+    def __init__(self, params: CanGraphActorArgs):
+        super().__init__(params, dep_actors=[])
+        self.batch_invoke_cache = {}
 
     @cached_property
     def text_parser(self) -> TextParser:
@@ -71,6 +69,9 @@ class CanGraphActor(BaseActor[CanGraphActorArgs]):
         kgdb: IdentObj[KGDB],
         parallel: bool = True,
     ):
+        if (example.key, can_ent.key) in self.batch_invoke_cache:
+            return self.batch_invoke_cache[example.key, can_ent.key]
+
         ex = example.value
         nrows, ncols = ex.table.table.shape()
         text_parser = self.text_parser
@@ -91,6 +92,57 @@ class CanGraphActor(BaseActor[CanGraphActorArgs]):
             None,
             parallel=parallel,
         )
+
+    def batch_invoke(
+        self,
+        exs: list[IdentObj[Example[FullTable]]],
+        can_ents: list[IdentObj[TableCanGenResult]],
+        kgdb: IdentObj[KGDB],
+        verbose: bool = True,
+    ):
+        if len(exs) == 0:
+            return []
+
+        assert all(
+            ex.value.kgname == kgdb.kgname for ex in exs
+        ), "Don't support multiple KGs in the same function call"
+
+        text_parser = self.text_parser
+
+        tables = []
+        table_cells = []
+
+        for ei, ex in tqdm(enumerate(exs), disable=not verbose):
+            nrows, ncols = ex.table.table.shape()
+            tbl = to_rust_table(ex, can_ents[ei])
+            cells = TableCells(
+                [
+                    [
+                        text_parser.parse(ex.table.table[ri, ci]).to_rust()
+                        for ci in range(ncols)
+                    ]
+                    for ri in range(nrows)
+                ]
+            )
+
+            tables.append(tbl)
+            table_cells.append(cells)
+
+        cangraphs = par_extract_cangraphs(
+            tables,
+            table_cells,
+            kgdb.value.rudb,
+            self.ru_cangraph_extractor,
+            None,
+            verbose=verbose,
+        )
+
+        self.batch_invoke_cache = {}
+        for ex, can_ent, cangraph in zip(exs, can_ents, cangraphs):
+            self.batch_invoke_cache[ex.key, can_ent.key] = cangraph
+            self.invoke(ex, can_ent, kgdb, False)
+        self.batch_invoke_cache = {}
+        return cangraphs
 
     @Cache.flat_cache(
         backend=Cache.sqlite.pickle(
