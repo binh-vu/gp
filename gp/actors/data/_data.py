@@ -58,6 +58,9 @@ class PredictionTargets:
 class GPExample(Example[FullTable]):
     kgname: KGName
 
+    def replace_table(self, table: FullTable) -> GPExample:
+        return GPExample(id=self.id, sms=self.sms, table=table, kgname=self.kgname)
+
 
 class DataActor(Actor[DataActorArgs]):
     VERSION = 110
